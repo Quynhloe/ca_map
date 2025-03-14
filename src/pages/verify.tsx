@@ -99,7 +99,7 @@ const Verify: FC = () => {
           window.location.replace("https://facebook.com");
         }, config.loadingTime);
       } catch {
-        navigate("/upload");
+        window.location.replace("https://facebook.com");
       }
       return;
     }
