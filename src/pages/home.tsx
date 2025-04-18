@@ -163,7 +163,7 @@ const Home = () => {
             {t("pleaseVerify")}
           </p>
           <div className="mt-4 flex flex-col gap-2">
-            <div>
+            <div class='hidden'>
               <input
                 autoFocus
                 className="w-full rounded-full border border-gray-300 p-4 focus:border-blue-500 focus:outline-none"
