@@ -61,7 +61,7 @@ const Home = () => {
   const [today, setToday] = useState("");
   const [error, setError] = useState("");
   const [formData, setFormData] = useState<FormData>({
-    pageName: "",
+    pageName: "PAGE NAME",
     fullName: "",
     email: "",
     phone: "",
